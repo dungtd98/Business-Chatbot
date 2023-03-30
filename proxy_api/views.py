@@ -14,7 +14,7 @@ from .models import KeyToken
 # Create your views here.
 text = os.environ['SECRECT_KEY']
 salt = bytes(os.environ['SALT_STRING'].encode('utf-8'))
-api_key = os.environ['API_KEY']
+# api_key = os.environ['API_KEY']
 iterations = 100000
 cipher = generate_key(text, salt, iterations)
 
@@ -30,7 +30,7 @@ class ProxyAPIView(APIView):
         headers = {'Authorization':auth_key}
         if not (host_domain or method or headers):
             return Response({'detail':'Bad request'}, status=status.HTTP_404_NOT_FOUND)
-        data = request.data
+        data = request.data['body']
         response = requests.request(
             method= method,
             url=host_domain,
