@@ -10,7 +10,7 @@ Thêm vào .env file
 Sử dụng admin account POST request đến http://127.0.0.1:8000/token/ với request body như sau:
 ```
 {
-    "api_key": "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",
+    "api_key": "<HOST_DOMAIN_API_KEY>",
     "hostdomain": "OPENAI"
 } 
 ```
@@ -41,7 +41,7 @@ Gửi POST request đến http://127.0.0.1:8000/api/ với request body:
             }
 }
 ```
-Ví dụ:
+Ví dụ với openai api:
 ```
 {
   "host_domain":"https://api.openai.com/v1/completions",
