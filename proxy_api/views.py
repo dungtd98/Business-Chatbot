@@ -39,9 +39,8 @@ class ProxyAPIView(APIView):
         )
         return Response(response.json(), status=response.status_code)
 
-class GetEncryptToken(APIView):
+class EncryptTokenListView(APIView):
     permission_classes = [permissions.IsAdminUser]
-    
     def get(self, request, format=None):
         query = KeyToken.objects.all()
         serializer = KeyTokenSerializer(query, many=True)
@@ -52,3 +51,18 @@ class GetEncryptToken(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class GetEncryptToken(APIView):
+    def _get_object(self, hostdomain):
+        try:
+            return KeyToken.objects.filter(hostdomain__name__icontains=hostdomain).order_by('?').first()
+        except KeyToken.DoesNotExist:
+            return Response({'detail':'Object does not exist'}, status=status.HTTP_404_NOT_FOUND)
+    
+    def get(self, request, format=None):
+        request_hostdomain = request.query_params.get('host_domain', None)
+        if not request_hostdomain:
+            return Response({'detail':'Bad request, "host_domain" param is required'}, status=status.HTTP_400_BAD_REQUEST)
+        instance = self._get_object(request_hostdomain)
+        serializer = KeyTokenSerializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
