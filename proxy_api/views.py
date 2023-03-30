@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import status
 import requests
-from .serializers import KeyTokenSerializer
+from .serializers import AdminKeyTokenSerializer, NormalUserTokenSerializer
 from .models import KeyToken
 
 # Create your views here.
@@ -43,10 +43,10 @@ class EncryptTokenListView(APIView):
     permission_classes = [permissions.IsAdminUser]
     def get(self, request, format=None):
         query = KeyToken.objects.all()
-        serializer = KeyTokenSerializer(query, many=True)
+        serializer = AdminKeyTokenSerializer(query, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     def post(self, request, format=None):
-        serializer = KeyTokenSerializer(data=request.data)
+        serializer = AdminKeyTokenSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -62,7 +62,7 @@ class GetEncryptToken(APIView):
     def get(self, request, format=None):
         request_hostdomain = request.query_params.get('host_domain', None)
         if not request_hostdomain:
-            return Response({'detail':'Bad request, "host_domain" param is required'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail':'Bad request, host_domain param is required'}, status=status.HTTP_400_BAD_REQUEST)
         instance = self._get_object(request_hostdomain)
-        serializer = KeyTokenSerializer(instance)
+        serializer = NormalUserTokenSerializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -10,11 +10,26 @@ Thêm vào .env file
 Sử dụng admin account POST request đến http://127.0.0.1:8000/token/ với request body như sau:
 ```
 {
-    "api_key": "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"
+    "api_key": "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",
+    "hostdomain": "OPENAI"
 } 
 ```
+### 3. Lấy encrypted token
+Gửi GET request đến http://127.0.0.1:8000/token/user-access-token/ thêm host_domain params vào request:
+```
+host_domain = <DOMAIN_EXIST_IN_DB>
+```
+Response nhận về token ngẫu nhiên từ các api_key liên kết đến domain đó như sau:
+```
+{
+    "id": 2,
+    "hostdomain": "OPENAI",
+    "access_token":"b'gA...=='"
+}
 
-### 3. Gửi request đến domain
+```
+
+### 4. Gửi request đến domain
 Gửi POST request đến http://127.0.0.1:8000/api/ với request body:
 
 ```
